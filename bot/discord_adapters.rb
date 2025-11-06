@@ -19,7 +19,7 @@ module DiscordAdapters
     end
 
     def send_ephemeral(message)
-      deliver(message, ephemeral: true)
+      deliver(message, ephemeral: !!event.server)
     end
 
     private
