@@ -39,7 +39,7 @@ class Brain
   end
 
   def request_archive(m, target, params, depth=:inf, url_file=false)
-    # Check only !a; allow !ao even without voice or op
+    # Only restrict the recursive archive command; the shallow variant is available to everyone.
     if depth == :inf
       return unless authorized?(m)
       # Lock !a < FILE to ops for now: it's a very niche thing.
@@ -81,12 +81,12 @@ class Brain
     # Recursive retrieval with youtube-dl is bad juju.
     if h[:youtube_dl] && depth == :inf
       reply m, 'Sorry, recursive retrieval with youtube-dl is not supported at this time.'
-      reply m, 'Please consider making a list of URLs to video pages and using !ao < URL.'
+      reply m, 'Please consider making a list of URLs to video pages and using /archiveonly or /archiveonly_file.'
       return
     end
 
     if h[:large] && (h[:pipeline] || depth == :shallow)
-      reply m, '--large has no effect when combined with --pipeline or !ao.'
+      reply m, '--large has no effect when combined with --pipeline or /archiveonly.'
       return
     end
 
@@ -139,7 +139,7 @@ class Brain
         reply m, "Using user-agent #{user_agent}."
       end
 
-      reply m, "Use !status #{job.ident} for updates, !abort #{job.ident} to abort."
+      reply m, "Use /status with ident #{job.ident} for updates, /abort with ident #{job.ident} to abort."
 
       if h[:explain]
         add_note(m, job, h[:explain], false)
@@ -178,7 +178,7 @@ class Brain
 
   def show_pending(m)
     if redis.llen('pending') > 10
-      privmsg(m, "Too many pending jobs to reply to !pending, please use the dashboard instead.")
+      privmsg(m, 'Too many pending jobs to reply to /pending, please use the dashboard instead.')
       return
     end
 
@@ -197,7 +197,7 @@ class Brain
   end
 
   def add_note(m, job, note, need_auth=true)
-    # aka !explain
+    # Mirrors the /explain slash command.
     if need_auth
       return unless authorized?(m)
     end

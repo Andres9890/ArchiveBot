@@ -17,6 +17,8 @@ gem 'trollop'
 gem 'uuidtools'
 gem 'twitter', '~> 5.5.1'
 
+gem 'discordrb', '~> 3.4'
+
 gem "ffi-rzmq", "~> 2.0"
 
 platform :rbx do
